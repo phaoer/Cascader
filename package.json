@@ -1,0 +1,29 @@
+{
+  "name": "cascader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^8.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.6.1",
+    "gulp-cssmin": "^0.2.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-notify": "^3.2.0",
+    "gulp-uglify": "^3.0.0"
+  },
+  "author": "phaoer",
+  "license": "ISC",
+  "browserslist": {
+    "production": [
+      "ie>10",
+      ">0.2%",
+      "not op_mini all"
+    ]
+  }
+}
