@@ -1,0 +1,100 @@
+.cascader{
+    width: 228px;
+    height: 28px;
+    line-height: 28px;
+    position: relative;
+    z-index: 1;
+    margin: auto;
+    cursor: pointer;
+}
+
+.cascader-selected {
+    width: 200px;
+    height: 100%;
+    padding: 0 5px;
+    text-align: center;
+    background-color: #3E3C51;
+    color: #B4B2C3;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cascader-icon {
+    display: block;
+    width: 28px;
+    height: 28px;
+    background: url(/assest/cascader-icon.png) left top no-repeat;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cascader-icon:not(.cascader-icon-active):hover {
+    background-position: -28px 0;
+}
+
+.cascader-icon-active {
+    background-position: -56px 0;
+}
+
+.cascader-box {
+    display: none;
+}
+
+.cascader-content {
+    position: absolute;
+    left: 0;
+    top: 32px;
+    width: 228px;
+    height: 120px;
+    background-color: #3E3C51;
+    overflow-y: auto;
+    display: none;
+}
+
+.cascader-content[tag="parent"]{
+    display: block;
+}
+
+.cascader-content::-webkit-scrollbar{
+    width: 5px;
+}
+
+.cascader-content::-webkit-scrollbar-thumb{
+    background: #706D86;
+}
+
+.cascader-content::-webkit-scrollbar-track{
+    border-radius: 0;
+    background: transparent;
+}
+
+.cascader-content-item{
+    position: relative;
+    height: 30px;
+    line-height: 30px;
+    padding: 0 36px 0 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #B4B2C3;
+}
+
+.cascader-content-item span{
+    position: absolute; 
+    top: 0; 
+    right: 15px; 
+    font-size: 14px;
+}
+
+.cascader-content-item:hover, .cascader-content-item-click{
+    background-color: #504E63;
+    color: #AFA7FF;
+}
+
+.content-show{
+    display: block;
+}

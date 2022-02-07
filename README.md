@@ -17,8 +17,8 @@ cascader for javascript and **base on jquery**
       width: 228,			  // cascader's width
       callback: function (data) {      // selected value callback
         // {
-        //   data: [{className: 'sichuan', value: '四川省', child: Array(1)}, {className: 'chengdu', value: '成都市', child: Array(6)}, {className: '', value: '高新区'}],
-        //   value: "四川省/成都市/高新区"
+        //   data: Array,   //选中的完整数据源
+        //   value: String  //选中的值
         // }
         console.log(data);
       },
@@ -30,22 +30,26 @@ cascader for javascript and **base on jquery**
           value: '成都市',
           child: [{
             className: '',
-            value: '金牛区',
+            value: '金牛区'
           }, {
             className: '',
-            value: '成华区',
+            value: '成华区'
           }, {
             className: '',
-            value: '锦江区',
+            value: '锦江区'
           }, {
             className: '',
-            value: '高新区',
+            value: '高新区'
           }, {
             className: '',
-            value: '青羊区',
+            value: '青羊区'
           }, {
             className: '',
             value: '武侯区',
+            child: [{
+              className: '',
+              value: '桂溪街道办'
+            }]
           }]
         }]
       }, {
@@ -56,7 +60,7 @@ cascader for javascript and **base on jquery**
           value: '丽江市',
           child: [{
             className: '',
-            value: '古城区',
+            value: '古城区'
           }]
         }]
       }, {
@@ -100,7 +104,7 @@ cascader for javascript and **base on jquery**
       }]
     });
 
-    cascader.init();      // init
+    cascader.init();      // init() current() reset()
   </script>
 
 ```
