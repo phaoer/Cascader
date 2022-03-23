@@ -1,5 +1,5 @@
 # Cascader
-cascader for javascript and **base on jquery**
+cascader for javascript
 
 ## Introduction
 > This is a small component removed from daily development. There are many imperfections. Please use it with caution
@@ -9,7 +9,6 @@ cascader for javascript and **base on jquery**
 ```javascript
   <link type="text/css" rel="stylesheet" href="dist/css/cascader.min.css">
   ...
-  <script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.11.1/jquery.min.js"></script>
   <script type="text/javascript" src="dist/js/cascader.min.js"></script>
   <script>
   var cascader = new Cascader({

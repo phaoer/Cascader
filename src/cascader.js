@@ -1,79 +1,97 @@
-(function (win) {
-  'use strict';
+;
+!(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : typeof define === 'function' && define.amd ? define(factory) : (global.Cascader = factory());
+}(this, (function () {
   var Cascader = function (option) {
-    if(!$){
-      console.warn('load jQuery first please');
-      return false;
-    }
-
+    this.option = option;
     this.selectedValue = '';
     this.selectedData = [];
     var that = this;
-    $('body').on('click', function (e) {
-      hideCascader();
-    }).on('click', '.cascader', function (e) {
-      if($('.cascader-box').hasClass('content-show')){
-        hideCascader();
-      } else {
-        showCascader();
-      }
-      e.stopPropagation();
-    }).on('click', '.cascader-content-item', function (e) {
-      var ele = $(this);
-      var rank = $(this).attr('torank');
-      var tag = $(this).attr('totag');
-      var activeContent = $('.cascader-content[tag=' + tag + ']');
-      var dataTemp = option.data;
-      var selectedArr = tag.split('-');
 
-      for (var index = 0; index < $('.cascader-content').length; index++) {      //隐藏大于等于当前等级的列表框 消除选中的项目
-        var element = $('.cascader-content').eq(index);
-        if (element.attr('rank') >= rank) {
-          element.removeClass('content-show').find('.cascader-content-item').removeClass('cascader-content-item-click');
+    document.querySelector('body').addEventListener('click', function (e) {
+      var ele = e.target;
+      if (ele.classList.contains('cascader-icon') || ele.classList.contains('cascader-selected')) {
+        if (document.querySelector('.cascader-box').classList.contains('content-show')) {
+          hideCascader();
+        } else {
+          showCascader();
         }
-      }
 
-      ele.addClass('cascader-content-item-click').siblings().removeClass('cascader-content-item-click');       //选中效果
+        e.stopPropagation();
+      } else if (ele.classList.contains('cascader-content-item')) {
+        var ele = e.target;
+        var rank = ele.getAttribute('torank');
+        var tag = ele.getAttribute('totag');
+        var activeContent = document.querySelector('.cascader-content[tag="' + tag + '"]');
+        var dataTemp = option.data;
+        var selectedArr = tag.split('-');
 
-      if (activeContent.length) {        //有下级显示下级
-        activeContent.addClass('content-show').css({
-          left: (rank - 1) * (that.option.width || 228)
-        });
-      } else {
-        that.selectedValue = '';
-        that.selectedData = [];
-        for (var i = 0; i < selectedArr.length; i++) {
-          that.selectedValue += dataTemp[selectedArr[i]].value + '/';
-          that.selectedData.push(dataTemp[selectedArr[i]]);
-          dataTemp = dataTemp[selectedArr[i]].child || null;
+        for (var i = 0; i < document.querySelectorAll('.cascader-content').length; i++) { //隐藏大于等于当前等级的列表框 消除选中的项目
+          var element = document.querySelectorAll('.cascader-content')[i];
+          if (element.getAttribute('rank') >= rank) {
+            element.classList.remove('content-show');
+            for (var j = 0; j < element.children.length; j++) {
+              element.children[j].classList.remove('cascader-content-item-click');
+            }
+          }
         }
-        that.selectedValue = that.selectedValue.substr(0, that.selectedValue.length - 1);
-        $('.cascader-selected').html(that.selectedValue);
+
+        for(var k = 0; k < ele.parentNode.children.length; k++) {
+          ele.parentNode.children[k].classList.remove('cascader-content-item-click');
+        }
+        ele.classList.add('cascader-content-item-click'); //选中效果
+
+        if (activeContent) { //有下级显示下级
+          activeContent.classList.add('content-show');
+          activeContent.style.left = (rank - 1) * (that.option.width || 228) + 'px';
+        } else {
+          that.selectedValue = '';
+          that.selectedData = [];
+          for (var i = 0; i < selectedArr.length; i++) {
+            that.selectedValue += dataTemp[selectedArr[i]].value + '/';
+            that.selectedData.push(dataTemp[selectedArr[i]]);
+            dataTemp = dataTemp[selectedArr[i]].child || null;
+          }
+          that.selectedValue = that.selectedValue.substr(0, that.selectedValue.length - 1);
+
+          document.querySelector('.cascader-selected').innerHTML = that.selectedValue;
+          hideCascader();
+
+          option.callback && option.callback(that.current());
+        }
+
+        e.stopPropagation();
+      } else {
         hideCascader();
-
-        option.callback && option.callback(that.current());
       }
-
-      e.stopPropagation();
     });
 
-    this.option = option;
-
-    function showCascader(){
+    function showCascader() {
       for (var index = 0; index < that.selectedData.length; index++) {
         var element = that.selectedData[index];
-        $('.cascader-content-item[title=' + element.value + ']').addClass('cascader-content-item-click').parent().addClass('content-show');
+        document.querySelector('.cascader-content-item[title="' + element.value + '"]').classList.add('cascader-content-item-click');
+
+        var parent = document.querySelector('.cascader-content-item[title="' + element.value + '"]').parentNode || document.querySelector('.cascader-content-item[title="' + element.value + '"]').parentElement;
+        parent.classList.add('content-show');
       }
 
-      $('.cascader-icon').addClass('cascader-icon-active');
-      $('.cascader-box').addClass('content-show');
+      document.querySelector('.cascader-icon').classList.add('cascader-icon-active');
+      document.querySelector('.cascader-box').classList.add('content-show');
     }
 
-    function hideCascader(){
-      $('.cascader-icon').removeClass('cascader-icon-active');
-      $('.cascader-box').removeClass('content-show');
-      $('.cascader-content').removeClass('content-show');
-      $('.cascader-content-item').removeClass('cascader-content-item-click');
+    function hideCascader() {
+      document.querySelector('.cascader-icon').classList.remove('cascader-icon-active');
+      document.querySelector('.cascader-box').classList.remove('content-show');
+
+      for (var i = 0; i < document.querySelectorAll('.cascader-content').length; i++) {
+        document.querySelectorAll('.cascader-content')[i].classList.remove('content-show');
+        
+      }
+
+      for (var j = 0; j < document.querySelectorAll('.cascader-content-item').length; j++) {
+        document.querySelectorAll('.cascader-content-item')[j].classList.remove('cascader-content-item-click');
+        
+      }
     }
   };
 
@@ -83,12 +101,11 @@
     var html = '<div class="cascader" ' + (this.option.width ? 'style="width: ' + this.option.width + 'px"' : '') + '>' +
       '<div class="cascader-selected" ' + (this.option.width ? 'style="width: ' + (this.option.width - 28) + 'px"' : '') + '></div>' +
       '<a class="cascader-icon" href="javascript:;"></a><div class="cascader-box">' + render(data, 1) + '</div></div>';
+    
+    injectCss();
+    document.querySelector(this.option.container).innerHTML = html;
 
-    $(this.option.container).html(html);
-
-    this.option.width && $('.cascader-content').css({
-      width: this.option.width
-    });
+    this.option.width && (document.querySelector('.cascader-content').style.width = this.option.width + 'px');
 
     function render(data, rank, tag) {
       var html = '<div class="cascader-content" rank=' + rank + ' tag=' + (tag || 'parent') + '>';
@@ -113,6 +130,15 @@
 
       return html;
     }
+
+    function injectCss () {
+      var head = document.getElementsByTagName('head')[0];
+      var style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = '.cascader {width:228px;height:28px;line-height:28px;position:relative;z-index:1;margin:auto;cursor:pointer;}.cascader-selected {width:200px;height:100%;padding:0 5px;text-align:center;background-color:#3E3C51;color:#B4B2C3;box-sizing:border-box;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}.cascader-icon {display:block;width:28px;height:28px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFQAAAAcCAYAAAD/YJjAAAACgUlEQVRoge2YzW6bQBDHhw8b/EFyyCEB1rSRem2veZeqz9Bn6INWckUAY6mcwAHbwa5mwK6bCIydiS/dn2Sthh32n/1lQU6Ub1+/b+GC3Ny4l4yDJAkvmqdeNO0/QAplRgplRgplRgplRgplRgplRgplRgpl5iyh/X4fPO8jjZegyvPY8waDIdze2p16sQ/7j3Gy0H7fACE+gGmYIIRH9XuCEoUQdZ5gk6ooKti2A9dX12DfuaAoSkOfArbt1n0O3dfGSUINw4SJ8EDXNCg3G9A1nWrDeB+puO5ETCin3JR13oQlb7vdQBSFtA/LsuCOZP0rFWu8bo0t6otmId3XRmehKFO4E9A0DRZPC5hOf9KItXA9mucEpQlXHORND/IEi9SiyCEM/Urq2KKTuJO6O5k7mdiH/cfoJNQ0q8cbN5MtMoiiADb4G4sCqmmTwqM+Dqo8cZAX1XnRQZ5gySuKAoLAh7IsYTwag+MIUFWVRqzxOs5jXxeOCjXNAbiuB5qqQpqlMKNjX/3HD0es8TrOYx/2vwWU5LouaKpW581e5M3qPI36OKQulwUE4SPJGw1HcH//iUaSGfo035VWofgCdhy3kpmmEMfRfnM7sMbrO6kOPTbnfRvDx8xxnEom5cUNefFeqmO/fvedA0p7DHx4Lkvax3P5TPVyuTxpNe3L54cfzdPb/VGP51HrQlmWgt7rQZL8hvV61dg3HF61rvM3Lz6Sl4He0yFJEliv1419eZ62rnMInsjFIgNzMKDX2WrVvI8m9GMNef5Eny7M57OTf4DXeTl9uuXN35z3EpTo+7/Ovl/+pcSMFMqMFMqMFMqMFMqMFMqMFMqMFMqMFMoJAPwBppknOva7ILEAAAAASUVORK5CYII=) left top no-repeat;position:absolute;top:0;right:0;}.cascader-icon:not(.cascader-icon-active):hover {background-position:-28px 0;}.cascader-icon-active {background-position:-56px 0;}.cascader-box {display:none;}.cascader-content {position:absolute;left:0;top:32px;width:228px;height:120px;background-color:#3E3C51;overflow-y:auto;display:none;}.cascader-content[tag="parent"] {display:block;}.cascader-content::-webkit-scrollbar {width:5px;}.cascader-content::-webkit-scrollbar-thumb {background:#706D86;}.cascader-content::-webkit-scrollbar-track {border-radius:0;background:transparent;}.cascader-content-item {position:relative;height:30px;line-height:30px;padding:0 36px 0 10px;box-sizing:border-box;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#B4B2C3;}.cascader-content-item span {position:absolute;top:0;right:15px;font-size:14px;}.cascader-content-item:hover,.cascader-content-item-click {background-color:#504E63;color:#AFA7FF;}.content-show {display:block;}';
+
+      head.appendChild(style);
+    }
   };
 
   Cascader.prototype.current = function () {
@@ -125,8 +151,8 @@
   Cascader.prototype.reset = function () {
     this.selectedValue = '';
     this.selectedData = [];
-    $('.cascader-selected').html('');
+    document.querySelector('.cascader-selected').innerHTML = '';
   };
 
-  win.Cascader = Cascader;
-})(window);
+  return Cascader;
+})));
