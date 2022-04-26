@@ -12,15 +12,16 @@ cascader for javascript
   <script type="text/javascript" src="dist/js/cascader.min.js"></script>
   <script>
   var cascader = new Cascader({
-      container: 'body',       // => $(container).html()
+      container: 'body',       // => document.querySelector(container).innerHTML
       width: 228,			  // cascader's width
       callback: function (data) {      // selected value callback
         // {
-        //   data: Array,   //选中的完整数据源
-        //   value: String  //选中的值
+        //   data: Array,   //selected full data source
+        //   value: String  //selected value
         // }
         console.log(data);
       },
+      defaultValue: '四川省/成都市/金牛区',     //string: 四川省/成都市/金牛区  or array: [0, 0, 0]
       data: [{
         className: 'sichuan',        // If the value is not empty, it will be set to class
         value: '四川省',             // value and html title
