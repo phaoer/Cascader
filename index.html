@@ -1,111 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<title>Cascader</title>
+	</head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>cascader</title>
-</head>
+	<body>
+		<script type="text/javascript" src="dist/index.js"></script>
+		<script>
+			var cascader = new Cascader("body", {
+				width: 300,
+				placeholder: "please select",
+				options: [
+					{
+						className: "sichuan",
+						value: "sichuan",
+						label: "Sichuan",
+						showTitle: true,
+						children: [
+							{
+								value: "chengdu",
+								label: "Chengdu",
+							},
+						],
+					},
+					{
+						value: "zhejiang",
+						label: "Zhejiang",
+						children: [
+							{
+								value: "hangzhou",
+								label: "Hangzhou",
+								children: [
+									{
+										value: "xihu",
+										label: "West Lake",
+									},
+								],
+							},
+						],
+					},
+					{
+						value: "jiangsu",
+						label: "Jiangsu",
+						disabled: true,
+						children: [
+							{
+								value: "nanjing",
+								label: "Nanjing",
+							},
+						],
+					},
+					{
+						value: "hongkong",
+						label: "Hongkong",
+					},
+				],
+				showClear: true,
+				defaultValue: ["zhejiang", "hangzhou", "xihu"],
+				onChange: function (value, labelValue) {
+					console.log(value, labelValue);
+				},
+				displayRender: function (label) {
+					return label.join("~");
+				},
+			});
 
-<body>
-  <script type="text/javascript" src="dist/js/cascader.min.js"></script>
-  <script>
-    var cascader = new Cascader({
-      container: 'body',
-      width: 228,
-      callback: function (data) {
-        // {
-        //   data: [{className: 'sichuan', value: '四川省', child: Array(1)}, {className: 'chengdu', value: '成都市', child: Array(6)}, {className: '', value: '高新区'}],
-        //   value: "四川省/成都市/高新区"
-        // }
-        console.log(data);
-      },
-      defaultValue: '四川省/成都市/金牛区',     //string: 四川省/成都市/金牛区  or array: [0, 0, 0]
-      data: [{
-        className: 'sichuan',
-        value: '四川省',
-        child: [{
-          className: 'chengdu',
-          value: '成都市',
-          child: [{
-            className: '',
-            value: '金牛区'
-          }, {
-            className: '',
-            value: '成华区'
-          }, {
-            className: '',
-            value: '锦江区'
-          }, {
-            className: '',
-            value: '高新区'
-          }, {
-            className: '',
-            value: '青羊区'
-          }, {
-            className: '',
-            value: '武侯区',
-            child: [{
-              className: '',
-              value: '桂溪街道办'
-            }]
-          }]
-        }]
-      }, {
-        className: 'yunnan',
-        value: '云南省',
-        child: [{
-          className: '',
-          value: '丽江市',
-          child: [{
-            className: '',
-            value: '古城区'
-          }]
-        }]
-      }, {
-        className: 'jiangsu',
-        value: '江苏省',
-        child: [{
-          className: '',
-          value: '南京市'
-        }]
-      }, {
-        className: 'guangdong',
-        value: '广东省',
-        child: [{
-          className: '',
-          value: '广州市',
-          child: [{
-            className: '',
-            value: '荔湾区'
-          }, {
-            className: '',
-            value: '越秀区'
-          }]
-        }, {
-          className: '',
-          value: '深圳市',
-          child: [{
-            className: '',
-            value: '南山区'
-          }, {
-            className: '',
-            value: '光明区'
-          }]
-        }]
-      }, {
-        className: 'ningxia',
-        value: '广西壮族自治区',
-        child: [{
-          className: '',
-          value: '南宁市'
-        }]
-      }]
-    });
-
-    cascader.init();   //reset()  current()
-
-  </script>
-</body>
-
+			cascader.init();   //reset() setValue(Array);
+		</script>
+	</body>
 </html>

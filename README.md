@@ -1,110 +1,88 @@
 # Cascader
-cascader for javascript
+  cascader for javascript
 
 ## Introduction
-> This is a small component removed from daily development. There are many imperfections. Please use it with caution
+> Extremely lightweight, incredibly simple.
 
-## Usage
+## Browser Support
 
+![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png) | ![Safari](https://raw.githubusercontent.com/alrra/browser-logos/main/src/safari/safari_48x48.png) | ![Opera](https://raw.githubusercontent.com/alrra/browser-logos/main/src/opera/opera_48x48.png) | ![Edge](https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png) | ![IE](https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
+--- | --- | --- | --- | --- | --- |
+Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 11 ✔ |
+
+## Installing
+
+### Package manager
+```bash
+  npm install cascaderjs
+```
+
+### Browser
 ```javascript
-  <link type="text/css" rel="stylesheet" href="dist/css/cascader.min.css">
-  ...
-  <script type="text/javascript" src="dist/js/cascader.min.js"></script>
-  <script>
-  var cascader = new Cascader({
-      container: 'body',       // => document.querySelector(container).innerHTML
-      width: 228,			  // cascader's width
-      callback: function (data) {      // selected value callback
-        // {
-        //   data: Array,   //selected full data source
-        //   value: String  //selected value
-        // }
-        console.log(data);
+  <script type="text/javascript" src="dist/index.js"></script>
+```
+
+## Example
+```javascript
+  var cascader = new Cascader("body", {
+    width: 300,     //default value 227
+    height: 40,
+    itemHeight: 35,
+    placeholder: "please select",
+    options: [
+      {
+        className: "sichuan"      //If the value is not empty, it will be set to class
+        value: "sichuan",
+        label: "Sichuan",
+        showTitle: true,      //html title attribute
+        children: [
+          {
+            value: "chengdu",
+            label: "Chengdu",
+          },
+        ],
       },
-      defaultValue: '四川省/成都市/金牛区',     //string: 四川省/成都市/金牛区  or array: [0, 0, 0]
-      data: [{
-        className: 'sichuan',        // If the value is not empty, it will be set to class
-        value: '四川省',             // value and html title
-        child: [{
-          className: 'chengdu',
-          value: '成都市',
-          child: [{
-            className: '',
-            value: '金牛区'
-          }, {
-            className: '',
-            value: '成华区'
-          }, {
-            className: '',
-            value: '锦江区'
-          }, {
-            className: '',
-            value: '高新区'
-          }, {
-            className: '',
-            value: '青羊区'
-          }, {
-            className: '',
-            value: '武侯区',
-            child: [{
-              className: '',
-              value: '桂溪街道办'
-            }]
-          }]
-        }]
-      }, {
-        className: 'yunnan',
-        value: '云南省',
-        child: [{
-          className: '',
-          value: '丽江市',
-          child: [{
-            className: '',
-            value: '古城区'
-          }]
-        }]
-      }, {
-        className: 'jiangsu',
-        value: '江苏省',
-        child: [{
-          className: '',
-          value: '南京市'
-        }]
-      }, {
-        className: 'guangdong',
-        value: '广东省',
-        child: [{
-          className: '',
-          value: '广州市',
-          child: [{
-            className: '',
-            value: '荔湾区'
-          }, {
-            className: '',
-            value: '越秀区'
-          }]
-        }, {
-          className: '',
-          value: '深圳市',
-          child: [{
-            className: '',
-            value: '南山区'
-          }, {
-            className: '',
-            value: '光明区'
-          }]
-        }]
-      }, {
-        className: 'ningxia',
-        value: '广西壮族自治区',
-        child: [{
-          className: '',
-          value: '南宁市'
-        }]
-      }]
-    });
+      {
+        value: "zhejiang",
+        label: "Zhejiang",
+        children: [
+          {
+            value: "hangzhou",
+            label: "Hangzhou",
+            children: [
+              {
+                value: "xihu",
+                label: "West Lake",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        value: "jiangsu",
+        label: "Jiangsu",
+        disabled: true,     //default value false
+        children: [
+          {
+            value: "nanjing",
+            label: "Nanjing",
+          },
+        ],
+      },
+      {
+        value: "hongkong",
+        label: "Hongkong",
+      },
+    ],
+    showClear: true,      //display clear button. default value false
+    defaultValue: ["zhejiang", "hangzhou", "xihu"],     //value array. default value []
+    onChange: function (value, labelValue) {      //selected callback
+      console.log(value, labelValue);
+    },
+    displayRender: function (label) {     //selected label display. default label.join("/")
+      return label.join("~");
+    },
+  });
 
-    cascader.init();      // init() current() reset()
-  </script>
-
+  cascader.init();   //reset() setValue(Array);
 ```

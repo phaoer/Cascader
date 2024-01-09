@@ -1,29 +1,35 @@
 {
-  "name": "Cascader",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/js/cascader.min.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-clean": "^0.4.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-connect": "^5.6.1",
-    "gulp-cssmin": "^0.2.0",
-    "gulp-eslint": "^5.0.0",
-    "gulp-notify": "^3.2.0",
-    "gulp-uglify": "^3.0.0"
-  },
-  "author": "phaoer",
-  "license": "ISC",
-  "browserslist": {
-    "production": [
-      "ie>10",
-      ">0.2%",
-      "not op_mini all"
-    ]
-  }
+	"name": "cascaderjs",
+	"author": "phaoer",
+	"license": "MIT",
+	"version": "2.0.0",
+	"description": "cascader for javascript",
+	"keywords": [
+		"javascript",
+		"utils"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/phaoer/Cascader"
+	},
+	"homepage": "https://github.com/phaoer/Cascader",
+	"bugs": "https://github.com/phaoer/Cascader/issues",
+	"main": "dist/cjs/index.cjs",
+	"module": "dist/esm/index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"watch": "rollup -c -w",
+		"build": "rollup -c"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.23.7",
+		"@babel/preset-env": "^7.23.7",
+		"@rollup/plugin-babel": "^6.0.4",
+		"@rollup/plugin-commonjs": "^25.0.7",
+		"@rollup/plugin-json": "^6.1.0",
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"@rollup/plugin-terser": "^0.4.4"
+	},
+	"dependencies": {}
 }
