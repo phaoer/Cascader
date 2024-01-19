@@ -2,7 +2,7 @@
 	"name": "cascaderjs",
 	"author": "phaoer",
 	"license": "MIT",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "cascader for javascript",
 	"keywords": [
 		"javascript",
@@ -17,6 +17,10 @@
 	"main": "dist/cjs/index.cjs",
 	"module": "dist/esm/index.js",
 	"type": "module",
+	"exports": {
+		"require": "./dist/cjs/index.cjs",
+		"import": "./dist/esm/index.js"
+	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"watch": "rollup -c -w",
@@ -30,6 +34,5 @@
 		"@rollup/plugin-json": "^6.1.0",
 		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4"
-	},
-	"dependencies": {}
+	}
 }

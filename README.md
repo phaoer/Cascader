@@ -1,4 +1,4 @@
-# Cascader
+# cascaderjs
   cascader for javascript
 
 ## Introduction
@@ -24,6 +24,8 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 11 ✔ |
 
 ## Example
 ```javascript
+  import Cascader from "cascaderjs";  // or const Cascader = require("cascaderjs");
+
   var cascader = new Cascader("body", {
     width: 300,     //default value 227
     height: 40,
