@@ -33,7 +33,7 @@ Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ | 11 ✔ |
     placeholder: "please select",
     options: [
       {
-        className: "sichuan"      //If the value is not empty, it will be set to class
+        className: "sichuan",      //If the value is not empty, it will be set to class
         value: "sichuan",
         label: "Sichuan",
         showTitle: true,      //html title attribute
