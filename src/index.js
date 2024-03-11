@@ -28,9 +28,9 @@ if (!Element.prototype.closest) {
 export default class Cascader {
 	#container;
 	#options;
-	#currentMenuItemKey;
-	#value;
-	#labelValue;
+	#value = [];
+	#labelValue = [];
+	#linkedList = [];
 	constructor(container, options) {
 		this.#container = container || "body";
 		this.#options = options || {};
@@ -66,12 +66,16 @@ export default class Cascader {
 				justify-content: space-between;
 				align-items: center;
 				width: ${width}px;
-				height: ${height}px;
+				min-height: ${height}px;
 				border: 1px solid rgb(217, 217, 217);
 				border-radius: 6px;
 				padding: 0 12px 0 15px;
 				color: rgba(0, 0, 0, 0.88);
 				cursor: pointer;
+			}
+
+			.cascader-container div {
+				box-sizing: border-box;
 			}
 
 			.cascader-container:hover, .cascader-container.gray {
@@ -89,17 +93,45 @@ export default class Cascader {
 				color: rgba(0, 0, 0, 0.25);
 			}
 
+			.cascader-container .cascader-value.cascader-value-multiple {
+				display: flex;
+				flex-wrap: wrap;
+			}
+
+			.cascader-container .cascader-value.cascader-value-multiple > div {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				width: ${width - 10 - 12 - 15 - 10}px;
+				background-color: rgba(0, 0, 0, 0.06);
+				border-radius: 4px;
+				margin: 2px 0;
+				padding: 5px 6px;
+			}
+
+			.cascader-container .cascader-value.cascader-value-multiple > div > div:first-child {
+				width: 88%;
+				color: rgba(0, 0, 0, 0.88);
+				overflow: hidden;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+			}
+
+			.cascader-container .cascader-value.cascader-value-multiple > div > div:last-child {
+				color: rgba(0, 0, 0, 0.88);
+			}
+
 			.cascader-container .cascader-menus {
 				position: absolute;
-				top: ${height + 5}px;
 				left: 0;
-				display: none;
+				display: flex;
+				visibility: hidden;
 				border-radius: 6px;
 				box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
 			}
 
 			.cascader-container .cascader-menus.active {
-				display: flex;
+				visibility: visible;
 			}
 
 			.cascader-container .cascader-menus .cascader-menu {
@@ -144,10 +176,62 @@ export default class Cascader {
 			}
 
 			.cascader-container
+				.cascader-menus-multiple
+				.cascader-menu
+				.cascader-menu-item
+				> div:first-child {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				width: 18px;
+				height: 18px;
+				border: 1px solid rgba(0, 0, 0, 0.25);
+				border-radius: 3px;
+				margin-right: 5px;
+			}
+
+			.cascader-container
+				.cascader-menus-multiple
+				.cascader-menu
+				.cascader-menu-item
+				> div:first-child div span {
+				display: none;
+				font-size: 12px;
+				color: #fff;
+			}
+
+			.cascader-container
+				.cascader-menus-multiple
+				.cascader-menu
+				.cascader-menu-item.multiple-active
+				> div:first-child {
+				background-color: #1677ff;
+				border-color: #1677ff;
+			}
+
+			.cascader-container
+				.cascader-menus-multiple
+				.cascader-menu
+				.cascader-menu-item.multiple-active
+				> div:first-child div span {
+				display: block;
+			}
+
+			.cascader-container
+				.cascader-menus-multiple
+				.cascader-menu
+				.cascader-menu-item.multiple-active-half
+				> div:first-child div {
+				width: 9px;
+				height: 9px;
+				background-color: #1677ff;
+			}
+
+			.cascader-container
 				.cascader-menus
 				.cascader-menu
 				.cascader-menu-item
-				div:first-child {
+				.cascader-menu-item-label {
 				white-space: nowrap;
 			}
 
@@ -155,7 +239,7 @@ export default class Cascader {
 				.cascader-menus
 				.cascader-menu
 				.cascader-menu-item
-				div:last-child {
+				> div:last-child {
 				margin-left: 10px;
 				color: rgba(0, 0, 0, 0.45);
 			}
@@ -164,7 +248,7 @@ export default class Cascader {
 				.cascader-menus
 				.cascader-menu
 				.cascader-menu-item.disabled
-				div:last-child {
+				> div:last-child {
 				color: rgba(0, 0, 0, 0.25);
 			}
 
@@ -217,16 +301,22 @@ export default class Cascader {
 	}
 
 	#createMenu(menuData) {
+		const { mode = "single" } = this.#options;
+
 		let html = `<div class="cascader-menu">`;
 		for (const iterator of menuData) {
-			const { className, label, value, disabled, children, showTitle } = iterator;
+			const { className, label, value, disabled, children, showTitle } =
+				iterator;
 			html += `
-				<div class="cascader-menu-item${className ? ` ${className}` : ``}${disabled ? ` disabled` : ``}"
+				<div class="cascader-menu-item${className ? ` ${className}` : ``}${
+				disabled ? ` disabled` : ``
+			}"
 					${showTitle ? `title="${label}"` : ``}
 					data-label="${label}"
 					data-value="${value}"
 				>
-					<div>${label}</div>
+					${mode === "multiple" ? "<div><div><span>&radic;</span></div></div>" : ""}
+					<div class="cascader-menu-item-label">${label}</div>
 					<div>${Array.isArray(children) ? ">" : ""}</div>
 				</div>
 			`;
@@ -258,15 +348,13 @@ export default class Cascader {
 	}
 
 	#findItemByValue(data, targetValue) {
-		for (let index = 0; index < data.length; index++) {
-			const element = data[index];
-
-			if (element.value === targetValue) {
-				return element;
+		for (const iterator of data) {
+			if (iterator.value === targetValue) {
+				return iterator;
 			}
 
-			if (element.children && element.children.length > 0) {
-				var result = this.#findItemByValue(element.children, targetValue);
+			if (iterator.children && iterator.children.length > 0) {
+				var result = this.#findItemByValue(iterator.children, targetValue);
 				if (result) {
 					return result;
 				}
@@ -276,18 +364,65 @@ export default class Cascader {
 		return null;
 	}
 
+	#multipleItemRender() {
+		const menuItemArr = this.#queryAll(".cascader-menu-item");
+
+		for (const iterator of menuItemArr) {
+			iterator.classList.remove("multiple-active", "multiple-active-half");
+		}
+
+		for (const iterator of this.#value) {
+			for (let index = 0; index < iterator.length; index++) {
+				const element = iterator[index];
+				const ele = this.#query(`.cascader-menu-item[data-value=${element}]`);
+
+				if (ele) {
+					if (index === iterator.length - 1) {
+						ele.classList.add("multiple-active");
+					} else {
+						ele.classList.add("multiple-active-half");
+					}
+				}
+			}
+		}
+	}
+
+	#multipleDisplayRender() {
+		const { displayRender } = this.#options;
+
+		let displayStr = ``;
+		if (typeof displayRender === "function") {
+			for (let index = 0; index < this.#labelValue.length; index++) {
+				const element = this.#labelValue[index];
+				const currentValue = this.#value[index];
+				displayStr += `<div><div>${displayRender(
+					element
+				)}</div><div class="cascader-multiple-value-del" data-link-list-value="${
+					currentValue[currentValue.length - 1]
+				}">×</div></div>`;
+			}
+		} else {
+			for (let index = 0; index < this.#labelValue.length; index++) {
+				const element = this.#labelValue[index];
+				const currentValue = this.#value[index];
+				displayStr += `<div><div>${element.join(
+					"/"
+				)}</div><div class="cascader-multiple-value-del" data-link-list-value="${
+					currentValue[currentValue.length - 1]
+				}">×</div></div>`;
+			}
+		}
+		this.#query(".cascader-value").innerHTML = displayStr;
+	}
+
 	#event() {
 		const cascaderContainer = this.#query(".cascader-container");
 		const menus = this.#query(".cascader-menus");
-		const { options = [], displayRender } = this.#options;
+		const { mode = "single", options = [], displayRender } = this.#options;
 
 		document.addEventListener("click", (e) => {
 			const target = e.target;
 			const isClickInside = cascaderContainer.contains(target);
-
-			if (!isClickInside) {
-				this.#menusHide();
-			}
 
 			const currentMenuItem = target.closest(".cascader-menu-item");
 			if (currentMenuItem) {
@@ -295,70 +430,120 @@ export default class Cascader {
 					return;
 				}
 
+				const isOrigin = e.pageX !== 0;
+
 				const key = currentMenuItem.dataset.value;
 
-				if (this.#currentMenuItemKey !== key) {
-					currentMenuItem.classList.add("active");
+				currentMenuItem.classList.add("active");
+				for (const iterator of this.#getSiblings(currentMenuItem)) {
+					iterator.classList.remove("active");
+				}
 
-					for (const iterator of this.#getSiblings(currentMenuItem)) {
-						iterator.classList.remove("active");
+				const level = this.#getSiblingsIndex(currentMenuItem.parentNode);
+				const menuArr = this.#queryAll(".cascader-menu");
+				for (let index = 0; index < menuArr.length; index++) {
+					const element = menuArr[index];
+					if (index > level) {
+						menus.removeChild(element);
 					}
+				}
 
-					const level = this.#getSiblingsIndex(currentMenuItem.parentNode);
+				const children = this.#findItemByValue(options, key)?.children;
+				if (children) {
+					menus.insertAdjacentHTML("beforeend", this.#createMenu(children));
+				} else {
+					const valueArr = [];
+					const labelArr = [];
+					const menuItemArr = this.#queryAll(".cascader-menu-item.active");
 
-					const menuArr = this.#queryAll(".cascader-menu");
+					if (mode === "multiple") {
+						const lastMenuItem = menuItemArr[menuItemArr.length - 1];
+						const linkedListValue = lastMenuItem.dataset.value;
+						const linkedListIndex = this.#linkedList.findIndex(
+							(ele) => ele === linkedListValue
+						);
 
-					for (let index = 0; index < menuArr.length; index++) {
-						const element = menuArr[index];
-						if (index > level) {
-							menus.removeChild(element);
+						if (linkedListIndex === -1) {
+							for (const iterator of menuItemArr) {
+								valueArr.push(iterator.dataset.value);
+								labelArr.push(iterator.dataset.label);
+							}
+
+							this.#value.push(valueArr);
+							this.#labelValue.push(labelArr);
+							this.#linkedList.push(linkedListValue);
+						} else {
+							this.#value.splice(linkedListIndex, 1);
+							this.#labelValue.splice(linkedListIndex, 1);
+							this.#linkedList.splice(linkedListIndex, 1);
 						}
-					}
 
-					const children = this.#findItemByValue(options, key)?.children;
-					if (children) {
-						menus.insertAdjacentHTML("beforeend", this.#createMenu(children));
+						this.#multipleDisplayRender();
+
+						// console.log(this.#value, this.#labelValue, this.#linkedList);
 					} else {
-						const valueArr = [];
-						const labelArr = [];
-						const menuItemArr = this.#queryAll(".cascader-menu-item.active");
-
-						for (let index = 0; index < menuItemArr.length; index++) {
-							const element = menuItemArr[index];
-							labelArr.push(element.dataset.label);
-							valueArr.push(element.dataset.value);
+						for (const iterator of menuItemArr) {
+							valueArr.push(iterator.dataset.value);
+							labelArr.push(iterator.dataset.label);
 						}
 
 						this.#value = valueArr;
 						this.#labelValue = labelArr;
 
-						this.#options.onChange?.(valueArr, labelArr);
-
 						let displayStr = ``;
 						if (typeof displayRender === "function") {
-							displayStr = displayRender(labelArr);
+							displayStr = displayRender(this.#labelValue);
 						} else {
-							displayStr = labelArr.join("/");
+							displayStr = this.#labelValue.join("/");
 						}
 						this.#query(".cascader-value").innerHTML = displayStr;
 
 						this.#menusHide();
 					}
+
+					isOrigin && this.#options.onChange?.(this.#value, this.#labelValue);
 				}
 
-				this.#currentMenuItemKey = key;
-			} else if (
-				target.matches(".cascader-container") ||
-				target.matches(".cascader-value") ||
-				target.matches(".cascader-arrow")
-			) {
-				if (menus.classList.contains("active")) {
-					this.#menusHide();
-				} else {
-					this.#menusShow();
+				if (mode === "multiple") {
+					this.#multipleItemRender();
 				}
+
+				return false;
 			} else if (target.matches(".cascader-clear")) {
 				this.reset();
+				return false;
+			} else if (target.matches(".cascader-multiple-value-del")) {
+				const linkListValue = target.dataset.linkListValue;
+				const linkedListIndex = this.#linkedList.findIndex(
+					(ele) => ele === linkListValue
+				);
+
+				for (const iterator of [
+					this.#value,
+					this.#labelValue,
+					this.#linkedList,
+				]) {
+					iterator.splice(linkedListIndex, 1);
+				}
+
+				this.#multipleItemRender();
+				this.#multipleDisplayRender();
+
+				if (this.#value.length === 0) {
+					this.reset();
+				}
+
+				return false;
+			}
+
+			if (isClickInside) {
+				if (mode === "single") {
+					this.setValue(this.#value);
+				}
+
+				this.#menusShow();
+			} else {
+				this.#menusHide();
 			}
 		});
 	}
@@ -370,12 +555,17 @@ export default class Cascader {
 			defaultValue = [],
 			placeholder = "",
 			showClear,
+			mode = "single",
 		} = this.#options;
 
 		container.innerHTML = `
 			<div class="cascader-container">
-				<div class="cascader-value"><span style="color: rgba(0, 0, 0, 0.25);">${placeholder}</span></div>
-				<div class="cascader-menus">
+				<div class="cascader-value ${
+					mode === "multiple" ? "cascader-value-multiple" : ""
+				}"><span style="color: rgba(0, 0, 0, 0.25);">${placeholder}</span></div>
+				<div class="cascader-menus ${
+					mode === "multiple" ? "cascader-menus-multiple" : ""
+				}">
 					${this.#createMenu(options)}
 				</div>
 				<div class="cascader-arrow"></div>
@@ -384,6 +574,10 @@ export default class Cascader {
 		`;
 
 		this.#injectCss();
+
+		this.#query(".cascader-menus").style.bottom = `-${
+			this.#query(".cascader-menus").offsetHeight + 5
+		}px`;
 
 		this.#event();
 
@@ -394,9 +588,8 @@ export default class Cascader {
 		const { placeholder = "" } = this.#options;
 
 		this.#value = [];
-		this.#options.onChange?.([]);
-
 		this.#labelValue = [];
+		this.#linkedList = [];
 		this.#query(
 			".cascader-value"
 		).innerHTML = `<span style="color: rgba(0, 0, 0, 0.25);">${placeholder}</span>`;
@@ -405,12 +598,17 @@ export default class Cascader {
 	}
 
 	setValue(value) {
-		const { options = [] } = this.#options;
+		const { mode = "single", options = [] } = this.#options;
 
 		if (Array.isArray(value) && value.length) {
-			for (let index = 0; index < value.length; index++) {
-				const element = value[index];
-				this.#query(`.cascader-menu-item[data-value=${element}]`).click?.();
+			for (const iterator of value) {
+				if (mode === "multiple") {
+					for (const item of iterator) {
+						this.#query(`.cascader-menu-item[data-value=${item}]`).click?.();
+					}
+				} else {
+					this.#query(`.cascader-menu-item[data-value=${iterator}]`).click?.();
+				}
 			}
 		} else {
 			this.#query(".cascader-menus").innerHTML = this.#createMenu(options);

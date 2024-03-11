@@ -12,6 +12,7 @@
 			var cascader = new Cascader("body", {
 				width: 300,
 				placeholder: "please select",
+				mode: "single",    //multiple
 				options: [
 					{
 						className: "sichuan",
@@ -22,6 +23,24 @@
 							{
 								value: "chengdu",
 								label: "Chengdu",
+								children: [
+									{
+										value: "wuhouci",
+										label: "Wuhou Shrine",
+									},
+									{
+										value: "jinli",
+										label: "Jinli Street",
+									},
+								],
+							},
+							{
+								value: "mianyang",
+								label: "Mianyang",
+							},
+							{
+								value: "zigong",
+								label: "Zigong",
 							},
 						],
 					},
@@ -58,7 +77,7 @@
 					},
 				],
 				showClear: true,
-				defaultValue: ["zhejiang", "hangzhou", "xihu"],
+				defaultValue: ["sichuan", "chengdu", "jinli"],   //multiple [["sichuan", "chengdu", "jinli"]]
 				onChange: function (value, labelValue) {
 					console.log(value, labelValue);
 				},
