@@ -27,27 +27,43 @@ if (!Element.prototype.closest) {
 
 export default class Cascader {
 	#container;
+	#number;
 	#options;
 	#value = [];
 	#labelValue = [];
 	#linkedList = [];
 	constructor(container, options) {
-		this.#container = container || "body";
-		this.#options = options || {};
+		if (!container) {
+			console.error("container selector is required");
 
-		if (window._CascaderIsInit) {
-			console.error("Do not initialize Cascader repeatedly");
 			return;
 		}
-		window._CascaderIsInit = true;
+
+		if (["document", "body"].includes(container)) {
+			console.error(`The value of container cannot be '${container}'`);
+
+			return;
+		}
+
+		this.#container = container;
+		this.#number = (+new Date()).toString();
+		this.#options = options || {};
 	}
 
-	#query(selector) {
-		return document.querySelector(selector);
+	#query(selector, pure) {
+		return (
+			pure
+				? document
+				: document.querySelector(`.cascader-container-${this.#number}`)
+		).querySelector(selector);
 	}
 
-	#queryAll(selector) {
-		return document.querySelectorAll(selector);
+	#queryAll(selector, pure) {
+		return (
+			pure
+				? document
+				: document.querySelector(`.cascader-container-${this.#number}`)
+		).querySelectorAll(selector);
 	}
 
 	#injectCss() {
@@ -291,12 +307,16 @@ export default class Cascader {
 	}
 
 	#menusShow() {
-		this.#query(".cascader-container").classList.add("gray");
+		this.#query(`.cascader-container-${this.#number}`, true).classList.add(
+			"gray"
+		);
 		this.#query(".cascader-menus").classList.add("active");
 	}
 
 	#menusHide() {
-		this.#query(".cascader-container").classList.remove("gray");
+		this.#query(`.cascader-container-${this.#number}`, true).classList.remove(
+			"gray"
+		);
 		this.#query(".cascader-menus").classList.remove("active");
 	}
 
@@ -416,11 +436,23 @@ export default class Cascader {
 	}
 
 	#event() {
-		const cascaderContainer = this.#query(".cascader-container");
+		const cascaderContainer = this.#query(
+			`.cascader-container-${this.#number}`,
+			true
+		);
 		const menus = this.#query(".cascader-menus");
 		const { mode = "single", options = [], displayRender } = this.#options;
 
 		document.addEventListener("click", (e) => {
+			const target = e.target;
+			const isClickInside = cascaderContainer.contains(target);
+
+			if (!isClickInside) {
+				this.#menusHide();
+			}
+		});
+
+		this.#query(this.#container, true).addEventListener("click", (e) => {
 			const target = e.target;
 			const isClickInside = cascaderContainer.contains(target);
 
@@ -542,14 +574,12 @@ export default class Cascader {
 				}
 
 				this.#menusShow();
-			} else {
-				this.#menusHide();
 			}
 		});
 	}
 
 	init() {
-		const container = this.#query(this.#container);
+		const container = this.#query(this.#container, true);
 		const {
 			options = [],
 			defaultValue = [],
@@ -559,7 +589,7 @@ export default class Cascader {
 		} = this.#options;
 
 		container.innerHTML = `
-			<div class="cascader-container">
+			<div class="cascader-container cascader-container-${this.#number}">
 				<div class="cascader-value ${
 					mode === "multiple" ? "cascader-value-multiple" : ""
 				}"><span style="color: rgba(0, 0, 0, 0.25);">${placeholder}</span></div>

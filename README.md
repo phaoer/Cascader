@@ -26,12 +26,20 @@ cascader for javascript
 <script type="text/javascript" src="dist/index.js"></script>
 ```
 
+## Usage
+
+```javascript
+new Cascader(selector, options);
+```
+
+> The value of selector cannot be 'body' or 'document'
+
 ## Example
 
 ```javascript
 import Cascader from "cascaderjs"; // or const Cascader = require("cascaderjs");
 
-var cascader = new Cascader("body", {
+var cascader = new Cascader(".cascader1", {
 	width: 300, //default is value 227
 	height: 40,
 	itemHeight: 35,
