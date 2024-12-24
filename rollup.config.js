@@ -1,18 +1,11 @@
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import { babel } from "@rollup/plugin-babel";
-import commonjs from "@rollup/plugin-commonjs";
 import terser from "@rollup/plugin-terser";
-import json from "@rollup/plugin-json";
+import typescript from "@rollup/plugin-typescript";
 
 export default {
-	input: "src/index.js",
+	input: "src/index.ts",
 	output: [
 		{
-			file: "dist/cjs/index.cjs",
-			format: "cjs",
-		},
-		{
-			file: "dist/esm/index.js",
+			file: "index.js",
 			format: "esm",
 		},
 		{
@@ -21,18 +14,9 @@ export default {
 			name: "Cascader",
 		},
 	],
-	plugins: [
-		nodeResolve({ mainFields: ["browser", "module", "main"] }),
-		commonjs(),
-		json(),
-		babel({
-			exclude: "node_modules/**",
-			babelHelpers: "bundled",
-		}),
-		terser(),
-	],
+	plugins: [typescript(), terser()],
 	watch: {
-		include: "src/**",
+		include: "src/**/*.ts",
 		chokidar: true,
 		clearScreen: false,
 	},

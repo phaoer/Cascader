@@ -4,20 +4,20 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Cascader</title>
+		<link rel="stylesheet" href="styles/index.css" />
 	</head>
 
 	<body>
-		<div style="display: flex; justify-content: space-between; width: 1200px; margin: auto;">
+		<div style="display: flex; justify-content: space-between; width: 1200px; margin: auto">
 			<div class="cascader1"></div>
 			<div class="cascader2"></div>
 		</div>
 		<script type="text/javascript" src="dist/index.js"></script>
 		<script>
 			var cascader = new Cascader(".cascader1", {
-				width: 300,
 				placeholder: "please select",
-				mode: "single",    //multiple
-				options: [
+				mode: "single", //multiple
+				data: [
 					{
 						className: "sichuan",
 						value: "sichuan",
@@ -82,22 +82,21 @@
 				],
 				showClear: true,
 				defaultValue: ["sichuan", "chengdu", "jinli"],
-				onChange: function (value, labelValue) {
-					console.log(value, labelValue);
+				onChange: function (value, labelValue, indexValue) {
+					console.log(value, labelValue, indexValue);
 				},
 				displayRender: function (label) {
 					return label.join("~");
 				},
 			});
 
-			cascader.init();   //reset() setValue(Array);
+			cascader.init(); //reset() setValue(Array);
 
 			//multiple
 			var cascader2 = new Cascader(".cascader2", {
-				width: 300,
 				placeholder: "please select",
-				mode: "multiple",   //single
-				options: [
+				mode: "multiple", //single
+				data: [
 					{
 						className: "sichuan",
 						value: "sichuan",
@@ -160,17 +159,17 @@
 						label: "Hongkong",
 					},
 				],
-				showClear: true,
-				defaultValue: [["sichuan", "chengdu", "jinli"]], 
-				onChange: function (value, labelValue) {
-					console.log(value, labelValue);
+				showClear: false,
+				defaultValue: [["sichuan", "mianyang"], ["sichuan", "zigong"], ["sichuan", "chengdu", "jinli"], ["sichuan", "chengdu", "wuhouci"], ["hongkong"]],
+				onChange: function (value, labelValue, indexValue) {
+					console.log(value, labelValue, indexValue);
 				},
 				displayRender: function (label) {
 					return label.join("~");
 				},
 			});
 
-			cascader2.init();   //reset() setValue(Array);
+			cascader2.init(); //reset() setValue(Array)
 		</script>
 	</body>
 </html>

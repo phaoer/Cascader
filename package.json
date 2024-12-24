@@ -1,41 +1,60 @@
 {
 	"name": "cascaderjs",
-	"author": "phaoer",
-	"license": "MIT",
-	"version": "2.0.3",
+	"version": "3.0.0",
 	"description": "cascader for javascript",
 	"keywords": [
 		"javascript",
 		"utils"
 	],
+	"homepage": "https://github.com/phaoer/Cascader",
+	"bugs": "https://github.com/phaoer/Cascader/issues",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/phaoer/Cascader"
 	},
-	"homepage": "https://github.com/phaoer/Cascader",
-	"bugs": "https://github.com/phaoer/Cascader/issues",
-	"main": "dist/cjs/index.cjs",
-	"module": "dist/esm/index.js",
+	"license": "MIT",
+	"author": "phaoer",
 	"type": "module",
 	"exports": {
 		".": {
-			"require": "./dist/cjs/index.cjs",
-			"import": "./dist/esm/index.js"
-		}
+			"types": "./index.d.ts",
+			"default": "./index.js"
+		},
+		"./styles/index.css": "./styles/index.css"
 	},
+	"browser": "dist/index.js",
+	"files": [
+		"dist/index.js",
+		"styles/index.css",
+		"index.d.ts",
+		"index.js",
+		"README.md",
+		"LICENSE",
+		"package.json"
+	],
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
-		"watch": "rollup -c -w",
-		"build": "rollup -c"
+		"watch": "npm-run-all --parallel watch:ts watch:css",
+		"build": "npm-run-all --parallel build:ts build:css",
+		"build:ts": "rollup -c",
+		"build:css": "sass src/index.scss styles/index.css && postcss styles/index.css -o styles/index.css",
+		"watch:css": "chokidar \"src/**/*.scss\" -c \"npm run build:css\"",
+		"watch:ts": "rollup -c -w"
 	},
 	"devDependencies": {
-		"@babel/core": "^7.23.7",
-		"@babel/preset-env": "^7.23.7",
-		"@rollup/plugin-babel": "^6.0.4",
-		"@rollup/plugin-commonjs": "^25.0.7",
-		"@rollup/plugin-json": "^6.1.0",
-		"@rollup/plugin-node-resolve": "^15.2.3",
 		"@rollup/plugin-terser": "^0.4.4",
-		"rollup": "^4.28.1"
+		"@rollup/plugin-typescript": "^11.1.6",
+		"chokidar-cli": "^3.0.0",
+		"cssnano": "^7.0.6",
+		"npm-run-all": "^4.1.5",
+		"postcss": "^8.4.49",
+		"postcss-cli": "^11.0.0",
+		"postcss-preset-env": "^10.1.2",
+		"prettier": "^2.8.7",
+		"prettier-plugin-organize-imports": "^3.2.2",
+		"prettier-plugin-packagejson": "^2.4.3",
+		"rollup": "^4.18.0",
+		"sass": "^1.83.0",
+		"tslib": "^2.6.3",
+		"typescript": "^5.4.5"
 	}
 }
