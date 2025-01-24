@@ -1,6 +1,6 @@
 {
 	"name": "cascaderjs",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"description": "cascader for javascript",
 	"keywords": [
 		"javascript",
@@ -24,6 +24,7 @@
 	},
 	"browser": "dist/index.js",
 	"files": [
+		"images",
 		"dist/index.js",
 		"styles/index.css",
 		"index.d.ts",

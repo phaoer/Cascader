@@ -132,6 +132,12 @@ cascader.setValue(["zhejiang", "hangzhou", "xihu"]);
 cascader.value; // labelValue indexValue
 ```
 
+## Preview 
+![preview-0](./images/preview-0.png)
+![preview-1](./images/preview-1.png)
+![preview-2](./images/preview-2.png)
+![preview-3](./images/preview-3.png)
+
 ## Customize
 
 > use css variable to customize cascader styles

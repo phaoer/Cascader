@@ -407,7 +407,7 @@ export default class Cascader {
 
 		document.addEventListener("click", (e) => {
 			const target = e.target as HTMLElement;
-			if (!cascaderContainer?.contains(target)) {
+			if (!cascaderContainer?.contains(target) && !target.classList.contains(`cascader-container_value_placeholder`)) {
 				this.menusHide();
 			}
 		});
