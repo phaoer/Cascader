@@ -1,10 +1,14 @@
 {
 	"name": "cascaderjs",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "cascader for javascript",
 	"keywords": [
 		"javascript",
-		"utils"
+		"utils",
+		"select",
+		"cascader",
+		"cascader-select",
+		"multiple-select"
 	],
 	"homepage": "https://github.com/phaoer/Cascader",
 	"bugs": "https://github.com/phaoer/Cascader/issues",
@@ -24,7 +28,6 @@
 	},
 	"browser": "dist/index.js",
 	"files": [
-		"images",
 		"dist/index.js",
 		"styles/index.css",
 		"index.d.ts",
